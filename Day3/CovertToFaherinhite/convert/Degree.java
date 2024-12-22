@@ -1,4 +1,4 @@
-import java.util.Scanner;
+package convert;
 import java.util.function.Function;
 interface Convertion{
     default double ConvertTofahorheit (double celsius){
@@ -20,6 +20,7 @@ public class Degree implements Function<Double, Double>,Convertion{
     double fahrenheit = ((celsius * 9) / 5) + 32;
         return fahrenheit;
     }
+    /* 
     public static void main(String[] args) {
         System.out.println("Input celsius degree to convert to fahrenheit: ");
         try (Scanner scan = new Scanner (System.in)) {
@@ -30,5 +31,5 @@ public class Degree implements Function<Double, Double>,Convertion{
             Degree converter = new Degree();
             System.out.println("Fahrenheit using Function<T, R> interface: " + converter.apply(celsius));
         }
-    }
+    }*/
 }
