@@ -8,26 +8,30 @@ public class Lab4 {
         User user = new User();
         try (Scanner scan = new Scanner(System.in)) {
             System.out.println("Enter your name: ");
-            String name = scan.next();
+            String name = scan.nextLine();
             System.out.println("Enter your age: ");
-            String age = scan.next();
+            String age = scan.nextLine();
             System.out.println("Enter your date of birth: ");
-            String date = scan.next();
+            String date = scan.nextLine();
+            
+            System.out.println("date " + date);
+            
             try {
+                user.getUserName(name);
                 user.getUserAge(age);
                 user.getUserDateOfBirth(date);
-                user.getUserName(name);
             }
             catch (RException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
+            }
+            catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
             }
             catch (DateTimeException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
             
-            catch (Exception e) {
-                e.getMessage();
-            }
+            
         }
     }
 }
