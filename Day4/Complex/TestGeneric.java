@@ -9,13 +9,30 @@ public class TestGeneric {
         System.out.println("Complex 1: " + complex1);
         System.out.println("Complex 2: " + complex2);
 
-        Complex<Double> sum = complex1.add(complex2);
-        System.out.println("Sum: " + sum);
+        print();
+        
+        Complex<Double> sumDouble = complex1.add(complex2, Double.class); 
+        Complex<Integer> sumInteger = complex1.add(complex2, Integer.class); 
+        System.out.println("Sum Double: " + sumDouble);
+        System.out.println("Sum Integer: " + sumInteger);
 
-        Complex<Double> difference = complex1.sub(complex2);
-        System.out.println("Difference: " + difference);
+        print();
 
-        Complex<Integer> product = complex1.multiply(complex2);
-        System.out.println("Product: " + product);
+        Complex<Double> subDouble = complex1.sub(complex2, Double.class); 
+        Complex<Integer> subInteger = complex1.sub(complex2, Integer.class); 
+        System.out.println("Sub Double: " + subDouble);
+        System.out.println("Sub Integer: " + subInteger);
+
+        print();
+        
+        Complex<Integer> productInteger = complex1.multiply(complex2, Integer.class); 
+        Complex<Double> ProductDouble = complex1.multiply(complex2, Double.class); 
+        System.out.println("Product Integer: " + productInteger);
+        System.out.println("Product Double: " + ProductDouble);
+        print();
+    }
+    
+    public static void print(){
+        System.out.println("-----------------------------------------------");
     }
 }
