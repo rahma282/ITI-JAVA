@@ -1,4 +1,4 @@
 package shape;
 abstract public class Shape {
-   abstract void drow();
+   public abstract void drow();
 }
