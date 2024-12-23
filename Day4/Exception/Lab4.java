@@ -11,7 +11,7 @@ public class Lab4 {
             String name = scan.nextLine();
             System.out.println("Enter your age: ");
             String age = scan.nextLine();
-            System.out.println("Enter your date of birth: ");
+            System.out.println("Enter your date of birth: ");  //2002-02-08
             String date = scan.nextLine();
             
             System.out.println("date " + date);
