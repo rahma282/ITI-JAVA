@@ -8,8 +8,8 @@ public class LibraryManagement {
         Magazine magazine1 = new Magazine(1, "National Geographic", 2024);
         Magazine magazine2 = new Magazine(2, "TIME", 2024);
 
-        Client client1 = new Client(1, "John Doe", "john.doe@example.com");
-        Client client2 = new Client(2, "Jane Smith", "jane.smith@example.com");
+        Client client1 = new Client(1, "Rahma Mostafa", "rahma.M@example.com");
+        Client client2 = new Client(2, "Gohar", "gohar.G@example.com");
 
        
         Library<LibraryItem> library = new Library<>();

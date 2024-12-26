@@ -1,7 +1,6 @@
 package library;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MenuSystem {
@@ -23,22 +22,27 @@ public class MenuSystem {
     }
 
     public void DisplayMenuSystem() {
-        int choice = 0;
+        int choice=0;
         do {
             System.out.println("---------- Welcome to Library Management System^-^ ----------");
             System.out.println("1. Manage Library Items");
             System.out.println("2. Manage Library Clients");
             System.out.println("3. Exit");
 
-            try {
-                System.out.print("Enter your choice: ");
-                choice = scan.nextInt();
-                scan.nextLine(); 
-            } catch (InputMismatchException e) {
-                System.out.println("You must input numbers, not strings");
-                scan.nextLine(); // Clear invalid choice
-            }
+            String input = scan.nextLine().trim(); 
 
+            if (input.isEmpty()) {
+                System.out.println("Error: Input cannot be empty. Please enter a valid number.");
+                continue;
+            }
+    
+            
+            try {
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Invalid input. Please enter a number.");
+                continue;
+            }
             switch (choice) {
                 case 1:
                     manageLibraryItems();     
@@ -111,44 +115,76 @@ public class MenuSystem {
         }
     }
 
-    private void addLibraryItem() {
-        System.out.println("Enter Item Type (1 for Book, 2 for Magazine): ");
-        int itemType = scan.nextInt();
-        scan.nextLine();  
-
-        System.out.print("Enter Item ID: ");
-        int id = scan.nextInt();
-        scan.nextLine();  
-
-        System.out.print("Enter Item Title: ");
-        String title = scan.nextLine();
-
-        switch (itemType) {
-            case 1:
-                System.out.print("Enter Author: ");
-                String author = scan.nextLine();
-                Book book = new Book(id, title, author);
-                if (libraryItems.isEmpty()) {
-                    System.out.println("No libraries available. Adding a new library.");
-                    Library<LibraryItem> newLibrary = new Library<>();
-                    libraryItems.add(newLibrary);
-                }   libraryItems.get(0).addItem(book);
-                break;
-            case 2:
-                System.out.print("Enter Issue Number: ");
-                int issueNumber = scan.nextInt();
-                Magazine magazine = new Magazine(id, title, issueNumber);
-                if (libraryItems.isEmpty()) {
-                    System.out.println("No libraries available. Adding a new library.");
-                    Library<LibraryItem> newLibrary = new Library<>();
-                    libraryItems.add(newLibrary);
-                }   libraryItems.get(0).addItem(magazine);
-                break;
-            default:
-                System.out.println("Invalid Item Type");
-                break;
+    private void addLibraryItem() throws NumberFormatException {
+        boolean validInput = false;  //check if the input is valid
+        
+        while (!validInput) {
+            try {
+                System.out.println("Enter Item Type ( 1) for Book, 2) for Magazine): ");
+                int itemType = scan.nextInt();
+                scan.nextLine();  
+    
+                System.out.print("Enter Item ID: ");
+                int id = scan.nextInt();
+                scan.nextLine();  
+                if (id <= 0) {
+                    throw new IllegalArgumentException("Error: Item ID must be a positive integer.");
+                }
+    
+                if (!isItemIdUnique(id)) {
+                    throw new IllegalArgumentException("Error: Item ID must be unique.");
+                }
+    
+                System.out.print("Enter Item Title: ");
+                String title = scan.nextLine();
+                if (title == null || title.isEmpty()) {
+                    throw new IllegalArgumentException("Error: Title cannot be empty.");
+                }
+    
+                switch (itemType) {
+                    case 1:
+                        System.out.print("Enter Author: ");
+                        String author = scan.nextLine();
+                        Book book = new Book(id, title, author);
+                        if (libraryItems.isEmpty()) {
+                            System.out.println("No libraries available. Adding a new library.");
+                            Library<LibraryItem> newLibrary = new Library<>();
+                            libraryItems.add(newLibrary);
+                        }
+                        libraryItems.get(0).addItem(book);
+                        validInput = true; // Exit the loop 
+                        break;
+                    case 2:
+                        System.out.print("Enter Issue Number: ");
+                        String issueNumberInput = scan.nextLine().trim();
+                        if (issueNumberInput.isEmpty()) {
+                            throw new IllegalArgumentException("Error: Issue Number cannot be empty.");
+                        }
+    
+                        try {
+                            int issueNumber = Integer.parseInt(issueNumberInput);
+                            Magazine magazine = new Magazine(id, title, issueNumber);
+                            if (libraryItems.isEmpty()) {
+                                System.out.println("No libraries available. Adding a new library.");
+                                Library<LibraryItem> newLibrary = new Library<>();
+                                libraryItems.add(newLibrary);
+                            }
+                            libraryItems.get(0).addItem(magazine);
+                            validInput = true; 
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Invalid Issue Number. Please enter a valid integer.");
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid Item Type");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Please try again.");
+            }
         }
     }
+    
 
     private void retrieveItems() {
         if (libraryItems.isEmpty()) {
@@ -161,36 +197,126 @@ public class MenuSystem {
     }
 
     private void removeLibraryItem() {
-        System.out.print("Enter the ID of the item to remove: ");
-        int id = scan.nextInt();
-        scan.nextLine();  
-
-        try {
-            for (Library<LibraryItem> library : libraryItems) {
-                library.removeItemById(id); 
-                System.out.println("Item removed.");
-                return;
-            }
-        } catch (ItemNotFoundException e) {
-            System.out.println("Item not found: " + e.getMessage());
+        while (true) {
+            try {
+                System.out.print("Enter the ID of the item to remove: ");
+                int id = scan.nextInt();
+                scan.nextLine();  
+    
+                boolean itemFound = false;
+                for (Library<LibraryItem> library : libraryItems) {
+                    try {
+                        library.removeItemById(id);
+                        System.out.println("Item removed.");
+                        itemFound = true;  //found and removed
+                        break;
+                    } catch (ItemNotFoundException ignored) {
+                        
+                    }
+                }
+                if (!itemFound) {
+                    throw new ItemNotFoundException();
+                }
+                break;  
+            } catch (ItemNotFoundException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Please try again with a different ID.");
+            } 
         }
     }
+    
 
-    private void addLibraryClient() {
-        System.out.print("Enter Client ID: ");
-        int id = scan.nextInt();
-        scan.nextLine();  
-
-        System.out.print("Enter Client Name: ");
-        String name = scan.nextLine();
-
-        System.out.print("Enter Client Email: ");
-        String email = scan.nextLine();
-
-        Client client = new Client(id, name, email);
-        libraryClients.add(client);
+    private boolean isItemIdUnique(int id) {
+        for (Library<LibraryItem> library : libraryItems) {
+            try {
+                library.retrieveItem(id);
+                return false; 
+            } catch (ItemNotFoundException ignored) {
+            }
+        }
+        return true; 
     }
+    private void addLibraryClient() {
+        boolean validInput = false;  //check if the input is valid
+    
+        while (!validInput) {
+            try {
+                System.out.print("Enter Client ID: ");
+                int id = scan.nextInt();
+                scan.nextLine(); 
+                
+                if (id <= 0) {
+                    throw new IllegalArgumentException("Error: Client ID must be a positive integer.");
+                }
+    
+                if (!isIdUnique(id)) {
+                    throw new IllegalArgumentException("Error: Client ID must be unique.");
+                }
+    
+                System.out.print("Enter Client Name: ");
+                String name = scan.nextLine();
+                if (name == null || name.isEmpty()) {
+                    throw new IllegalArgumentException("Error: Name cannot be empty.");
+                }
+    
+                System.out.print("Enter Client Email: ");
+                String email = scan.nextLine();
+                if (email == null || email.isEmpty() || !isValidEmail(email)) {
+                    throw new IllegalArgumentException("Error: Invalid email format.");
+                }
+    
+                Client client = new Client(id, name, email);
+                libraryClients.add(client);
+                validInput = true;  // exit the loop
+    
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Please try again.");
+            } 
+        }
+    }
+    
 
+    private void removeLibraryClient() {
+        while (true) {
+            try {
+                System.out.print("Enter the ID of the client to remove: ");
+                int id = scan.nextInt();
+                scan.nextLine(); 
+    
+                boolean found = false;
+                for (Client client : libraryClients) {
+                    if (client.getId() == id) {
+                        libraryClients.remove(client);
+                        System.out.println("Client removed.");
+                        found = true;
+                        break;
+                    }
+                }
+    
+                if (!found) {
+                    throw new IllegalArgumentException("Client with ID " + id + " not found.");
+                }
+                break;  // successfully removed
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Please try again with a valid client ID.");
+            } 
+        }
+    }
+    
+    private boolean isIdUnique(int id) {
+        for (Client client : libraryClients) {
+            if (client.getId() == id) {
+                return false; 
+            }
+        }
+        return true; 
+    }
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        return email.matches(emailRegex);
+    }
     private void viewLibraryClients() {
         if (libraryClients.isEmpty()) {
             System.out.println("No clients available.");
@@ -198,26 +324,6 @@ public class MenuSystem {
             for (Client client : libraryClients) {
                 System.out.println(client.getClientDetails());
             }
-        }
-    }
-
-    private void removeLibraryClient() {
-        System.out.println("Enter the ID of the client to remove: ");
-        int id = scan.nextInt();
-        scan.nextLine();  
-
-        boolean found = false;
-        for (Client client : libraryClients) {
-            if (client.getId() == id) {
-                libraryClients.remove(client);
-                System.out.println("Client removed.");
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("Client not found.");
         }
     }
 }

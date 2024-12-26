@@ -29,4 +29,6 @@ public class Client {
     public String getClientDetails() {
         return "Client ID: " + id + ", Name: " + name + ", Email: " + email;
     }
+    
+    
 }
