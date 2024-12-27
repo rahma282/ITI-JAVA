@@ -54,7 +54,7 @@ public class MenuSystem {
                     System.out.println("Exiting program... See you again");
                     break;
                 default:
-                    System.out.println("Invalid choice! Please try again.");
+                throw new IllegalArgumentException("Invalid Item Type");
             }
         } while (choice != 3);
     }
@@ -82,7 +82,7 @@ public class MenuSystem {
                 case 4:
                     return;
                 default:
-                    System.out.println("Invalid choice! Please try again.");
+                throw new IllegalArgumentException("Invalid Item Type");
             }
         }
     }
@@ -110,7 +110,7 @@ public class MenuSystem {
                 case 4:
                     return;
                 default:
-                    System.out.println("Invalid choice! Please try again.");
+                throw new IllegalArgumentException("Invalid Item Type");
             }
         }
     }
@@ -120,13 +120,18 @@ public class MenuSystem {
         
         while (!validInput) {
             try {
-                System.out.println("Enter Item Type ( 1) for Book, 2) for Magazine): ");
+                System.out.println("Enter Item Type: \n1.for Book \n2.for Magazine ");
                 int itemType = scan.nextInt();
                 scan.nextLine();  
-    
+                if (itemType != 1 && itemType != 2) {
+                    throw new IllegalArgumentException("Error: Invalid item type. Enter 1 for Book or 2 for Magazine.");
+                }
                 System.out.print("Enter Item ID: ");
-                int id = scan.nextInt();
-                scan.nextLine();  
+                String idInput = scan.nextLine();  
+                if (!idInput.matches("\\d+")) {
+                throw new IllegalArgumentException("Error: Item ID must be a numeric value.");
+                }
+                int id = Integer.parseInt(idInput);  
                 if (id <= 0) {
                     throw new IllegalArgumentException("Error: Item ID must be a positive integer.");
                 }
@@ -242,8 +247,11 @@ public class MenuSystem {
         while (!validInput) {
             try {
                 System.out.print("Enter Client ID: ");
-                int id = scan.nextInt();
-                scan.nextLine(); 
+                String idInput = scan.nextLine();  
+                if (!idInput.matches("\\d+")) {
+                throw new IllegalArgumentException("Error: Item ID must be a numeric value.");
+                }
+                int id = Integer.parseInt(idInput);
                 
                 if (id <= 0) {
                     throw new IllegalArgumentException("Error: Client ID must be a positive integer.");

@@ -4,7 +4,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class MapAlpha {
-    public SortedMap<Character, TreeSet<String>> alpha;
+    private SortedMap<Character, TreeSet<String>> alpha;
 
     MapAlpha() {
         alpha = new TreeMap<>();

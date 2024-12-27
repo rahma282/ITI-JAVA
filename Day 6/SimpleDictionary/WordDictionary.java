@@ -24,7 +24,7 @@ public class WordDictionary {
 
 
         try ( 
-                Scanner scan = new Scanner(System.in)) {
+              Scanner scan = new Scanner(System.in)) {
             System.out.print("\nEnter a letter to view words: ");
             char letter = scan.next().charAt(0);
             try {
